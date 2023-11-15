@@ -4,8 +4,8 @@ class ServiceReparation {
     private $db; // PDO object for database connection
 
     public function connect() {
-        // Load database configuration from  ini file
-        $config = parse_ini_file('..db_config.ini');
+        // Load database configuration from ini file
+        $config = parse_ini_file('../db_config.ini');
 
         // Establish a database connection using PDO
         try {
@@ -28,12 +28,12 @@ class ServiceReparation {
             $stmt = $this->db->prepare($query);
 
             // Bind parameters and execute the query
-            $stmt->execute([
-                $reparation->getNameWorkshop(),
-                $reparation->getRegisterDate(),
-                $reparation->getLicensePlate(),
-                $reparation->getPhoto()
-            ]);
+            $stmt->bindParam(1, $reparation->getNameWorkshop());
+            $stmt->bindParam(2, $reparation->getRegisterDate());
+            $stmt->bindParam(3, $reparation->getLicensePlate());
+            $stmt->bindParam(4, $reparation->getPhoto());
+
+            $stmt->execute();
 
             return true; // Return true if insertion is successful
         } catch (PDOException $e) {
@@ -43,14 +43,15 @@ class ServiceReparation {
         }
     }
 
-    public function getReparation($role) {
+    public function getReparation($id) {
         try {
-            // Prepare the SQL query for selecting a reparation record based on role
-            $query = "SELECT * FROM Reparation WHERE role = ?";
+            // Prepare the SQL query for selecting a reparation record based on id
+            $query = "SELECT * FROM Reparation WHERE id = ?";
             $stmt = $this->db->prepare($query);
 
             // Bind parameters and execute the query
-            $stmt->execute([$role]);
+            $stmt->bindParam(1, $id);
+            $stmt->execute();
 
             // Fetch the result set as an associative array
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,3 +65,4 @@ class ServiceReparation {
     }
 }
 ?>
+
