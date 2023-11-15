@@ -6,6 +6,7 @@ use Ramsey\Uuid\Uuid;
 
 class Reparation {
     private string $id;
+    
     private string $nameWorkshop;
     private DateTime $registerDate;
     private string $licensePlate;
