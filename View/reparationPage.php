@@ -11,13 +11,14 @@ $controllerReparation->getService()->connect();
 if (isset($_POST["insert"])) {
 
     $name = $_POST["insertName"];
-    $date = new DateTime($_POST["insertDate"]);
+    $date = $_POST["insertDate"];
     $licensePlate = $_POST["insertLicensePlate"];
     
     // Procesamiento de la imagen con Intervention Image
     $uploadedFile = $_FILES['insertPhoto'];
     $photoPath = $uploadedFile['tmp_name'];
     $photo = Image::make($photoPath);
+ 
     $controllerReparation->insertReparation(new Reparation($name, $date, $licensePlate, $photo));
 }
 ?>

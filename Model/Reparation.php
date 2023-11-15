@@ -1,18 +1,17 @@
 
 <?php
 
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\Image as Image;
 use Ramsey\Uuid\Uuid;
 
 class Reparation {
     private string $id;
-    
     private string $nameWorkshop;
-    private DateTime $registerDate;
+    private string $registerDate;
     private string $licensePlate;
     private Image $photo;
 
-    public function __construct(string $nameWorkshop, DateTime $registerDate, string $licensePlate, Image $photo){
+    public function __construct(string $nameWorkshop, string $registerDate, string $licensePlate, Image $photo){
         $uuid = Uuid::uuid4();
         $this->id = $uuid;
         $this->nameWorkshop = $nameWorkshop;
@@ -62,9 +61,9 @@ class Reparation {
     /**
      * Get the registration date of the reparation.
      *
-     * @return string The registration date of the reparation.
+     * @return @string The registration date of the reparation.
      */
-    public function getRegisterDate(): DateTime {
+    public function getRegisterDate(): string {
         return $this->registerDate;
     }
 

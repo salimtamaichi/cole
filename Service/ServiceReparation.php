@@ -1,9 +1,11 @@
 <?php
 
-class ServiceReparation {
+class ServiceReparation
+{
     private $db; // PDO object for database connection
 
-    public function connect() {
+    public function connect()
+    {
         // Load database configuration from ini file
         $config = parse_ini_file('../db_config.ini');
 
@@ -21,17 +23,23 @@ class ServiceReparation {
         }
     }
 
-    public function insertReparation(Reparation $reparation) {
+    public function insertReparation(Reparation $reparation)
+    {
         try {
             // Prepare the SQL query for inserting a reparation record
             $query = "INSERT INTO Reparation (name_workshop, register_date, license_plate, photo) VALUES (?, ?, ?, ?)";
             $stmt = $this->db->prepare($query);
 
+            $nameWorkshop = $reparation->getNameWorkshop();
+            $registerDate = $reparation->getRegisterDate();
+           
+            $licensePlate = $reparation->getLicensePlate();
+            $photo = $reparation->getPhoto();
             // Bind parameters and execute the query
-            $stmt->bindParam(1, $reparation->getNameWorkshop());
-            $stmt->bindParam(2, $reparation->getRegisterDate());
-            $stmt->bindParam(3, $reparation->getLicensePlate());
-            $stmt->bindParam(4, $reparation->getPhoto());
+            $stmt->bindParam(1, $nameWorkshop);
+            $stmt->bindParam(2, $registerDate);
+            $stmt->bindParam(3, $licensePlate);
+            $stmt->bindParam(4, $photo, PDO::PARAM_LOB);
 
             $stmt->execute();
 
@@ -43,7 +51,8 @@ class ServiceReparation {
         }
     }
 
-    public function getReparation($id) {
+    public function getReparation($id)
+    {
         try {
             // Prepare the SQL query for selecting a reparation record based on id
             $query = "SELECT * FROM Reparation WHERE id = ?";
@@ -64,5 +73,3 @@ class ServiceReparation {
         }
     }
 }
-?>
-
