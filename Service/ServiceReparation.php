@@ -10,9 +10,9 @@ class ServiceReparation {
         // Establish a database connection using PDO
         try {
             $this->db = new PDO(
-                "mysql:host={$config['host']};dbname={$config['dbname']}",
-                $config['username'],
-                $config['password']
+                "mysql:host={$config['DB_HOST']};dbname={$config['DB_NAME']}",
+                $config['DB_USER'],
+                $config['DB_PASS']
             );
             $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
