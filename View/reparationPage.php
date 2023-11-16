@@ -17,9 +17,13 @@ if(isset($_GET["getReparation"]) && isset($_GET["idReparation"])) {
     if($reparation[0]) {
         // Establecer el tipo MIME de la respuesta como una imagen JPEG
         // header('Cont ent-Type: image/jpg');
-
+        $image = Image::make($reparation[0]["photo"]);
+        $watermark = Image::make('src/images/watermark.png');
+        $watermark->pixelate(12);
+        $img->insert($watermark, 'center');
         // Mostrar la imagen almacenada en el BLOB
         echo "<img src=".$reparation[0]["photo"].">";
+        // echo "<img src=".$reparation[0]["photo"].">";
         
     }
 }
