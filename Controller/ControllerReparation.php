@@ -15,7 +15,8 @@ class ControllerReparation{
     }  
     
     public function getReparation(string $id){
-        $this->service->getReparation($id);
+    
+        return  $this->service->getReparation($id);
     }
 
     public function getService(){

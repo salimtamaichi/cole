@@ -27,19 +27,23 @@ class ServiceReparation
     {
         try {
             // Prepare the SQL query for inserting a reparation record
-            $query = "INSERT INTO Reparation (name_workshop, register_date, license_plate, photo) VALUES (?, ?, ?, ?)";
+            $query = "INSERT INTO Reparation (id,name_workshop, register_date, license_plate, photo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($query);
 
+            $id = $reparation->getId();
             $nameWorkshop = $reparation->getNameWorkshop();
             $registerDate = $reparation->getRegisterDate();
            
             $licensePlate = $reparation->getLicensePlate();
             $photo = $reparation->getPhoto();
+
+            $imageData = $photo->encode('data-url');
             // Bind parameters and execute the query
-            $stmt->bindParam(1, $nameWorkshop);
-            $stmt->bindParam(2, $registerDate);
-            $stmt->bindParam(3, $licensePlate);
-            $stmt->bindParam(4, $photo, PDO::PARAM_LOB);
+            $stmt->bindParam(1, $id);
+            $stmt->bindParam(2, $nameWorkshop);
+            $stmt->bindParam(3, $registerDate);
+            $stmt->bindParam(4, $licensePlate);
+            $stmt->bindParam(5, $imageData, PDO::PARAM_LOB);
 
             $stmt->execute();
 

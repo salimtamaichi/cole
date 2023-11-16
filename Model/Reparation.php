@@ -13,11 +13,18 @@ class Reparation {
 
     public function __construct(string $nameWorkshop, string $registerDate, string $licensePlate, Image $photo){
         $uuid = Uuid::uuid4();
-        $this->id = $uuid;
+        $this->id = $uuid->toString();
         $this->nameWorkshop = $nameWorkshop;
         $this->registerDate = $registerDate;
         $this->licensePlate = $licensePlate;
         $this->photo = $photo;
+        $this->photo->text($this->licensePlate.$this->id, 120, $photo->height()-10,function($font) {
+            $font->size(100);
+            $font->color('#000000');
+            $font->align('center');
+            $font->valign('top');
+            $font->angle(45);
+        });
     }
 
     /**
@@ -25,7 +32,7 @@ class Reparation {
      *
      * @return int The ID of the reparation.
      */
-    public function getId(): int {
+    public function getId(): string {
         return $this->id;
     }
 
@@ -35,7 +42,7 @@ class Reparation {
      * @param int $id The ID of the reparation.
      * @return void
      */
-    public function setId(int $id): void {
+    public function setId(string $id): void {
         $this->id = $id;
     }
 
@@ -99,7 +106,7 @@ class Reparation {
     /**
      * Get the photo or image of the reparation.
      *
-     * @return string The photo or image of the reparation (stored as a BLOB).
+     * @return Image The photo or image of the reparation (stored as a BLOB).
      */
     public function getPhoto(): Image {
         return $this->photo;
@@ -108,7 +115,7 @@ class Reparation {
     /**
      * Set the photo or image of the reparation.
      *
-     * @param string $photo The photo or image data to be stored as a BLOB.
+     * @param Image $photo The photo or image data to be stored as a BLOB.
      * @return void
      */
     public function setPhoto(Image $photo): void {

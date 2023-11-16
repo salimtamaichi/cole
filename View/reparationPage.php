@@ -2,12 +2,29 @@
 require '../vendor/autoload.php';
 
 use Intervention\Image\ImageManagerStatic as Image; // Importa el namespace adecuado
-
-
 require_once "../Controller/ControllerReparation.php";
+
 $controllerReparation = new ControllerReparation(new ServiceReparation());
 $controllerReparation->getService()->connect();
 
+
+
+if(isset($_GET["getReparation"]) && isset($_GET["idReparation"])) {
+    $reparationId = $_GET["idReparation"];
+    $reparation = $controllerReparation->getReparation($reparationId);
+
+    // Verificar si se obtuvo la reparación y la imagen
+    if($reparation[0]) {
+        // Establecer el tipo MIME de la respuesta como una imagen JPEG
+        // header('Cont ent-Type: image/jpg');
+
+        // Mostrar la imagen almacenada en el BLOB
+        echo "<img src=".$reparation[0]["photo"].">";
+        
+    }
+}
+
+//Insertar reparación
 if (isset($_POST["insert"])) {
 
     $name = $_POST["insertName"];
@@ -17,8 +34,7 @@ if (isset($_POST["insert"])) {
     // Procesamiento de la imagen con Intervention Image
     $uploadedFile = $_FILES['insertPhoto'];
     $photoPath = $uploadedFile['tmp_name'];
-    $photo = Image::make($photoPath);
- 
+    $photo = Image::make($photoPath);    
     $controllerReparation->insertReparation(new Reparation($name, $date, $licensePlate, $photo));
 }
 ?>
@@ -35,10 +51,12 @@ if (isset($_POST["insert"])) {
 </head>
 
 <body>
+
+    <!--GET-->
     <div class="container mt-4">
         <form action="" method="get" class="mb-3">
             <input type="text" name="idReparation" class="form-control">
-            <button type="submit" class="btn btn-primary mt-2">Search</button>
+            <button type="submit" name="getReparation" class="btn btn-primary mt-2">Search</button>
         </form>
 
         <a href="formPage.php" class="btn btn-primary">Insertar reparación</a>
@@ -46,6 +64,7 @@ if (isset($_POST["insert"])) {
         <a href="index.php">Back</a>
     </div>
 
+    <!--INSERT-->
     <div class="container mt-4">
         <form action="" method="post" enctype="multipart/form-data" class="mb-3">
             <div class="mb-3">
