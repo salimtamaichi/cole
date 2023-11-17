@@ -1,3 +1,7 @@
+<?php
+session_start();
+    session_destroy();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +21,7 @@
                     <option value="employee">Employee</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" name="roleBtn" class="btn btn-primary">Register</button>
         </form>
     </div>
 

@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../vendor/autoload.php';
 
 use Intervention\Image\ImageManagerStatic as Image; // Importa el namespace adecuado
@@ -7,24 +8,43 @@ require_once "../Controller/ControllerReparation.php";
 $controllerReparation = new ControllerReparation(new ServiceReparation());
 $controllerReparation->getService()->connect();
 
+$outputDirectory = "../src/images/outputImg/";
+
+if(!array_key_exists("role",$_SESSION)){
+    $_SESSION["role"] = "";
+}
+
+if (isset($_POST["roleBtn"]) ||  $_SESSION["role"] == "") {
+    $_SESSION["role"] = $_POST["role"];
+}
+
+if (!is_dir($outputDirectory)) {
+    // Si el directorio no existe, intenta crearlo con permisos adecuados (0777 para pruebas)
+    mkdir($outputDirectory, 0777, true);
+}
 
 
-if(isset($_GET["getReparation"]) && isset($_GET["idReparation"])) {
+if (isset($_GET["getReparation"]) && isset($_GET["idReparation"])) {
     $reparationId = $_GET["idReparation"];
     $reparation = $controllerReparation->getReparation($reparationId);
 
     // Verificar si se obtuvo la reparación y la imagen
-    if($reparation[0]) {
+    if ($reparation[0]) {
         // Establecer el tipo MIME de la respuesta como una imagen JPEG
         // header('Cont ent-Type: image/jpg');
-        $image = Image::make($reparation[0]["photo"]);
-        $watermark = Image::make('src/images/watermark.png');
-        $watermark->pixelate(12);
-        $img->insert($watermark, 'center');
+        $image = Image::make($reparation[0]["photo"])->resize(600, 500);
+        if ($_SESSION["role"] == "client") {
+            $watermark = Image::make('..\src\images\watermark.jpg');
+            $watermark->pixelate(4);
+            $image->insert($watermark, 'top-left', 0, $image->height() - 12);
+        }
+        $imageName = "output_image.jpg"; // Nombre del archivo de salida
+        $imagePath = $outputDirectory . $imageName;
+        $image->save($imagePath, 90);
         // Mostrar la imagen almacenada en el BLOB
-        echo "<img src=".$reparation[0]["photo"].">";
+        echo "<img style='' src='" . $imagePath . "'>";
         // echo "<img src=".$reparation[0]["photo"].">";
-        
+
     }
 }
 
@@ -34,11 +54,14 @@ if (isset($_POST["insert"])) {
     $name = $_POST["insertName"];
     $date = $_POST["insertDate"];
     $licensePlate = $_POST["insertLicensePlate"];
-    
+
     // Procesamiento de la imagen con Intervention Image
     $uploadedFile = $_FILES['insertPhoto'];
     $photoPath = $uploadedFile['tmp_name'];
-    $photo = Image::make($photoPath);    
+    $photo = Image::make($photoPath);
+    $watermark = Image::make('..\src\images\watermark.jpg')->opacity(50);
+    $watermark->pixelate(4);
+    $photo->insert($watermark, 'top-left', 0, $photo->height() - 12);
     $controllerReparation->insertReparation(new Reparation($name, $date, $licensePlate, $photo));
 }
 ?>
@@ -63,12 +86,15 @@ if (isset($_POST["insert"])) {
             <button type="submit" name="getReparation" class="btn btn-primary mt-2">Search</button>
         </form>
 
-        <a href="formPage.php" class="btn btn-primary">Insertar reparación</a>
-
         <a href="index.php">Back</a>
     </div>
 
-    <!--INSERT-->
+
+        <!--INSERT-->
+    <?php
+    if($_SESSION["role"] == "employee"){
+    echo '
+
     <div class="container mt-4">
         <form action="" method="post" enctype="multipart/form-data" class="mb-3">
             <div class="mb-3">
@@ -91,7 +117,7 @@ if (isset($_POST["insert"])) {
         </form>
 
         <a href="index.php" class="btn btn-secondary">Back</a>
-    </div>
+    </div>';}?>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
